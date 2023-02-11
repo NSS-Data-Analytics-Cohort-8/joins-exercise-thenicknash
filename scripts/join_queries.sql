@@ -90,3 +90,20 @@ order by s.film_title;
 -- Only 1 movie in the dataset has a distributor whose HQ is not in CA. My Big Fat Greek Wedding by default has the highest imdb rating.
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
+
+select (
+	select round(avg(r.imdb_rating), 2)
+	from specs as s
+	inner join rating as r
+	on s.movie_id = r.movie_id
+	where s.length_in_min <= 120
+) as avg_under_2_hour_movie_rating,
+(
+	select round(avg(r.imdb_rating), 2)
+	from specs as s
+	inner join rating as r
+	on s.movie_id = r.movie_id
+	where s.length_in_min > 120
+) as avg_over_2_hour_movie_rating;
+
+-- Over 2 hour movies have a .34 edge over under 2 hour movies
