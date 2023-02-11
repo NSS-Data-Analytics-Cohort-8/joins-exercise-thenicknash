@@ -54,8 +54,39 @@ limit 1;
 -- 4. Write a query that returns, for each distributor in the distributors table, the distributor name and the number of movies associated with that distributor in the movies 
 -- table. Your result set should include all of the distributors, whether or not they have any movies in the movies table.
 
+select
+	d.company_name,
+	count(s.*) as number_of_movies
+from distributors as d
+left join specs as s
+on d.distributor_id = s.domestic_distributor_id
+group by d.company_name
+order by d.company_name;
+
 -- 5. Write a query that returns the five distributors with the highest average movie budget.
 
+select
+	d.company_name,
+	round(avg(r.film_budget), 2) as avg_movie_budget
+from distributors as d
+inner join specs as s
+on d.distributor_id = s.domestic_distributor_id
+inner join revenue as r
+on s.movie_id = r.movie_id
+group by d.company_name
+order by avg_movie_budget desc
+limit 5;
+
 -- 6. How many movies in the dataset are distributed by a company which is not headquartered in California? Which of these movies has the highest imdb rating?
+
+select
+	s.film_title
+from distributors as d
+inner join specs as s
+on d.distributor_id = s.domestic_distributor_id
+where lower(d.headquarters) not like '%ca%'
+order by s.film_title;
+
+-- Only 1 movie in the dataset has a distributor whose HQ is not in CA. My Big Fat Greek Wedding by default has the highest imdb rating.
 
 -- 7. Which have a higher average rating, movies which are over two hours long or movies which are under two hours?
